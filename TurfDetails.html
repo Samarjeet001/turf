@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Turf Booking - BookMyTurf</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .turf-header img {
+      width: 100%;
+      border-radius: 10px;
+      height: 300px;
+      object-fit: cover;
+    }
+
+    .turf-details {
+      margin-top: 20px;
+    }
+
+    .turf-details h2 {
+      margin-bottom: 10px;
+    }
+
+    .booking-section {
+      margin-top: 30px;
+    }
+
+    .booking-section label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .booking-section input,
+    .booking-section select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .booking-section button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .booking-section button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="turf-header">
+      <img id="turf-img" src="" alt="Turf Image">
+    </div>
+
+    <div class="turf-details">
+      <h2 id="turf-name">Loading...</h2>
+      <p><strong>Address:</strong> <span id="turf-address"></span></p>
+      <p><strong>Activities:</strong> <span id="turf-activities"></span></p>
+      <p><strong>Hours:</strong> <span id="turf-hours"></span></p>
+      <p><strong>Rating:</strong> <span id="turf-rating"></span></p>
+    </div>
+
+    <div class="booking-section">
+      <h3>Book Your Slot</h3>
+      <label for="date">Select Date:</label>
+      <input type="date" id="date" name="date">
+
+      <label for="slot">Select Time Slot:</label>
+      <select id="slot" name="slot">
+        <option value="">-- Select a Time Slot --</option>
+        <option value="6-7am">6:00 AM - 7:00 AM</option>
+        <option value="7-8am">7:00 AM - 8:00 AM</option>
+        <option value="8-9am">8:00 AM - 9:00 AM</option>
+        <option value="5-6pm">5:00 PM - 6:00 PM</option>
+        <option value="6-7pm">6:00 PM - 7:00 PM</option>
+        <option value="7-8pm">7:00 PM - 8:00 PM</option>
+      </select>
+
+      <button onclick="confirmBooking()">Confirm Booking</button>
+    </div>
+  </div>
+
+  <script>
+    const turfs = {
+      bhima: {
+        name: "Bhima Sports Arena",
+        img: "displayimgs/displayimg1.jpg",
+        address: "Rajarshi Shahu Jalataran Talav, Rajarampuri, Kolhapur",
+        activities: "Football, Cricket, Yoga",
+        hours: "06:00 AM – 11:30 PM",
+        rating: "⭐ 4.4 (26 reviews)"
+      },
+      sportingo: {
+        name: "Sportingo Turf",
+        img: "displayimgs/displayimg2.jpg",
+        address: "Nagalapark, Kolhapur",
+        activities: "Football, General Sports",
+        hours: "Flexible",
+        rating: "⭐ 4.6 (60 reviews)"
+      },
+      tikitaka: {
+        name: "Tiki Taka Turf",
+        img: "displayimgs/displayimg3.jpg",
+        address: "Race Course Naka, Padmala, Kolhapur",
+        activities: "Football",
+        hours: "Phone: +91 91531 91535",
+        rating: "⭐ 4.3 (92 reviews)"
+      },
+      kings: {
+        name: "Kings Arena",
+        img: "displayimgs/displayimg4.jpg",
+        address: "Near Shivaji University, Kolhapur",
+        activities: "Football, Box Cricket",
+        hours: "06:00 AM – 10:00 PM",
+        rating: "⭐ 4.5 (40 reviews)"
+      },
+      kolhapur: {
+        name: "Turf Kolhapur",
+        img: "displayimgs/displayimg5.jpg",
+        address: "Rajarampuri 5th Lane, Kolhapur",
+        activities: "Football, Cricket",
+        hours: "05:00 AM – 11:00 PM",
+        rating: "⭐ 4.2 (30 reviews)"
+      }
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const turfId = urlParams.get('turf');
+
+    if (turfs[turfId]) {
+      const turf = turfs[turfId];
+      document.getElementById('turf-img').src = turf.img;
+      document.getElementById('turf-name').textContent = turf.name;
+      document.getElementById('turf-address').textContent = turf.address;
+      document.getElementById('turf-activities').textContent = turf.activities;
+      document.getElementById('turf-hours').textContent = turf.hours;
+      document.getElementById('turf-rating').textContent = turf.rating;
+    } else {
+      document.querySelector('.container').innerHTML = "<h2 style='text-align:center;'>Turf not found.</h2>";
+    }
+
+    function confirmBooking() {
+      const date = document.getElementById('date').value;
+      const slot = document.getElementById('slot').value;
+      const turfName = document.getElementById('turf-name').textContent;
+
+      if (!date || !slot) {
+        alert('Please select both date and time slot.');
+        return;
+      }
+
+      alert(`Your booking for ${turfName} on ${date} at ${slot} is confirmed!`);
+    }
+  </script>
+</body>
+</html>
