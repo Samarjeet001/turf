@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Owner Dashboard - BookMyTurf</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #eef1f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #1c6dd0;
+      color: white;
+      padding: 20px 30px;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .dashboard-container {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-cards {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      flex: 1;
+      min-width: 250px;
+      padding: 20px;
+      background: #f7f9fc;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+
+    .card h3 {
+      margin: 10px 0;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .card p {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1c6dd0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table thead {
+      background-color: #1c6dd0;
+      color: white;
+    }
+
+    table th, table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    table tbody tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .add-booking {
+      margin-top: 40px;
+    }
+
+    .add-booking h2 {
+      color: #333;
+    }
+
+    .add-booking form {
+      display: grid;
+      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      margin-top: 15px;
+    }
+
+    .add-booking input, .add-booking button {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .add-booking button {
+      background-color: #1c6dd0;
+      color: white;
+      cursor: pointer;
+      grid-column: span 2;
+    }
+
+    .add-booking button:hover {
+      background-color: #145db2;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-cards {
+        flex-direction: column;
+      }
+
+      .add-booking form {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>🏟️ Owner Dashboard - BookMyTurf</header>
+
+  <div class="dashboard-container">
+    <div class="dashboard-cards">
+      <div class="card">
+        <i class="fas fa-calendar-check fa-2x"></i>
+        <h3>Total Bookings</h3>
+        <p id="total-bookings">0</p>
+      </div>
+      <div class="card">
+        <i class="fas fa-rupee-sign fa-2x"></i>
+        <h3>Total Revenue</h3>
+        <p id="total-revenue">₹0</p>
+      </div>
+      <div class="card">
+        <i class="fas fa-star fa-2x"></i>
+        <h3>Average Rating</h3>
+        <p id="average-rating">4.4</p>
+      </div>
+    </div>
+
+    <h2 style="margin-top: 20px; color: #333;">📅 Upcoming Bookings</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time Slot</th>
+          <th>Customer</th>
+          <th>Contact</th>
+        </tr>
+      </thead>
+      <tbody id="booking-table">
+        <!-- Booking rows will be populated here -->
+      </tbody>
+    </table>
+
+    <div class="add-booking">
+      <h2>➕ Manually Add Booking</h2>
+      <form id="booking-form">
+        <input type="date" id="date" required>
+        <input type="text" id="slot" placeholder="e.g. 6:00 AM - 7:00 AM" required>
+        <input type="text" id="customer" placeholder="Customer Name" required>
+        <input type="text" id="contact" placeholder="Contact Number" required>
+        <button type="submit">Add Booking</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let bookingData = [
+      { date: '2025-06-16', slot: '6:00 AM - 7:00 AM', customer: 'Rohan Patil', contact: '9876543210' },
+      { date: '2025-06-16', slot: '7:00 PM - 8:00 PM', customer: 'Sneha Joshi', contact: '9898989898' },
+      { date: '2025-06-17', slot: '8:00 AM - 9:00 AM', customer: 'Aman Deshmukh', contact: '9765432101' },
+      { date: '2025-06-18', slot: '5:00 PM - 6:00 PM', customer: 'Pooja Mane', contact: '9123456789' }
+    ];
+
+    const tableBody = document.getElementById('booking-table');
+    const totalBookings = document.getElementById('total-bookings');
+    const totalRevenue = document.getElementById('total-revenue');
+
+    function renderBookings() {
+      tableBody.innerHTML = '';
+      bookingData.forEach(booking => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${booking.date}</td>
+          <td>${booking.slot}</td>
+          <td>${booking.customer}</td>
+          <td>${booking.contact}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+
+      totalBookings.textContent = bookingData.length;
+      totalRevenue.textContent = '₹' + (bookingData.length * 300); // ₹300 per booking
+    }
+
+    document.getElementById('booking-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const date = document.getElementById('date').value;
+      const slot = document.getElementById('slot').value;
+      const customer = document.getElementById('customer').value;
+      const contact = document.getElementById('contact').value;
+
+      if (!date || !slot || !customer || !contact) {
+        alert('Please fill all fields.');
+        return;
+      }
+
+      bookingData.push({ date, slot, customer, contact });
+      renderBookings();
+      this.reset(); // Clear the form
+    });
+
+    renderBookings();
+  </script>
+</body>
+</html>
